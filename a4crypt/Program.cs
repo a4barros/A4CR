@@ -2,4 +2,4 @@
 using a4crypt;
 
 
-Console.WriteLine($"{Core.DeriveKey("abc123")[0]}");
+//Core.Encrypt();
