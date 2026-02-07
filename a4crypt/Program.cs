@@ -2,4 +2,5 @@
 using a4crypt;
 
 
-//Core.Encrypt();
+Core.Encrypt("G:\\Documents\\drone.png", "G:\\Documents\\drone.a4cr", "123");
+Core.Decrypt("G:\\Documents\\drone.a4cr", "G:\\Documents\\a.png", "123");

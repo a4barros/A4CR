@@ -6,20 +6,35 @@ using System.Text;
 
 namespace a4crypt
 {
-    internal class CryptFileInterface
+    internal class CryptFileParser
     {
         public readonly byte[] Nonce;
         public readonly byte[] Salt;
         public byte[] Tag { get; }
         public byte[] Contents { get; }
-        private CryptFileInterface(byte[] nonce, byte[] salt, byte[] tag, byte[] contents)
+        public G.KeyTypes KeyType { get; }
+        public G.KeyStrengths KeyStrength { get; }
+        private CryptFileParser(byte[] nonce, byte[] salt, byte[] tag, int keyType, int keyStrength, byte[] contents)
         {
             Nonce = nonce;
             Salt = salt;
             Tag = tag;
             Contents = contents;
+
+            if (!Enum.TryParse<G.KeyTypes>(keyType.ToString(), out var parsedKeyType))
+            {
+                throw new FileInterfaceException("Invalid key type");
+            }
+
+            if (!Enum.TryParse<G.KeyStrengths>(keyStrength.ToString(), out var parsedKeyStrength))
+            {
+                throw new FileInterfaceException("Invalid key strength");
+            }
+
+            KeyType = parsedKeyType;
+            KeyStrength = parsedKeyStrength;
         }
-        public static CryptFileInterface Open(string inputPath)
+        public static CryptFileParser Open(string inputPath)
         {
             var stream = File.Open(inputPath, FileMode.Open, FileAccess.Read);
             HeaderCheck(stream);
@@ -36,15 +51,21 @@ namespace a4crypt
             var tag = new byte[G.TagSize];
             stream.ReadExactly(tag);
 
+            stream.Position = G.KeyTypeStart;
+            int keytype = stream.ReadByte();
+
+            stream.Position = G.KeyStrengthStart;
+            int keystrength = stream.ReadByte();
+
             stream.Position = G.FileContentsStart;
             long fileLength = stream.Length - G.FileContentsStart;
             var fileContents = new byte[fileLength];
             stream.ReadExactly(fileContents);
             stream.Close();
 
-            return new CryptFileInterface(nonce, salt, tag, fileContents);
+            return new CryptFileParser(nonce, salt, tag, keytype, keystrength, fileContents);
         }
-        public static void Save(string outputPath, byte[] nonce, byte[] salt, byte[] tag, byte[] fileContents)
+        public static void Save(string outputPath, byte[] nonce, byte[] salt, byte[] tag, G.KeyTypes keyType, G.KeyStrengths keyStrength, byte[] fileContents)
         {
             SaveSanityCheck(nonce, salt, tag);
             var stream = File.Open(outputPath, FileMode.CreateNew, FileAccess.Write);
@@ -54,6 +75,8 @@ namespace a4crypt
             stream.Write(nonce);
             stream.Write(salt);
             stream.Write(tag);
+            stream.Write([(byte)keyType]);
+            stream.Write([(byte)keyStrength]);
             stream.Write(fileContents);
             stream.Close();
         }
