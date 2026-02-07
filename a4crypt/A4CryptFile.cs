@@ -6,7 +6,7 @@ using System.Text;
 
 namespace a4crypt
 {
-    internal class CryptFileParser
+    public class A4CryptFile
     {
         public readonly byte[] Nonce;
         public readonly byte[] Salt;
@@ -14,29 +14,26 @@ namespace a4crypt
         public byte[] Contents { get; }
         public G.KeyTypes KeyType { get; }
         public G.KeyStrengths KeyStrength { get; }
-        private CryptFileParser(byte[] nonce, byte[] salt, byte[] tag, int keyType, int keyStrength, byte[] contents)
+        public A4CryptFile(byte[] nonce, byte[] salt, byte[] tag, int keyType, int keyStrength, byte[] contents)
         {
             Nonce = nonce;
             Salt = salt;
             Tag = tag;
             Contents = contents;
+            SanityCheck(nonce, salt, tag);
 
-            if (!Enum.TryParse<G.KeyTypes>(keyType.ToString(), out var parsedKeyType))
-            {
+            if (!Enum.IsDefined(typeof(G.KeyTypes), keyType))
                 throw new FileInterfaceException("Invalid key type");
-            }
 
-            if (!Enum.TryParse<G.KeyStrengths>(keyStrength.ToString(), out var parsedKeyStrength))
-            {
+            if (!Enum.IsDefined(typeof(G.KeyStrengths), keyStrength))
                 throw new FileInterfaceException("Invalid key strength");
-            }
 
-            KeyType = parsedKeyType;
-            KeyStrength = parsedKeyStrength;
+            KeyType = (G.KeyTypes)keyType;
+            KeyStrength = (G.KeyStrengths)keyStrength;
         }
-        public static CryptFileParser Open(string inputPath)
+        public static A4CryptFile Open(string inputPath)
         {
-            var stream = File.Open(inputPath, FileMode.Open, FileAccess.Read);
+            using var stream = File.Open(inputPath, FileMode.Open, FileAccess.Read);
             HeaderCheck(stream);
 
             stream.Position = G.NonceStart;
@@ -61,29 +58,28 @@ namespace a4crypt
             long fileLength = stream.Length - G.FileContentsStart;
             var fileContents = new byte[fileLength];
             stream.ReadExactly(fileContents);
-            stream.Close();
 
-            return new CryptFileParser(nonce, salt, tag, keytype, keystrength, fileContents);
+            return new A4CryptFile(nonce, salt, tag, keytype, keystrength, fileContents);
         }
         public static void Save(string outputPath, byte[] nonce, byte[] salt, byte[] tag, G.KeyTypes keyType, G.KeyStrengths keyStrength, byte[] fileContents)
         {
-            SaveSanityCheck(nonce, salt, tag);
-            var stream = File.Open(outputPath, FileMode.CreateNew, FileAccess.Write);
+            using var stream = File.Open(outputPath, FileMode.CreateNew, FileAccess.Write);
+            var c = new A4CryptFile(nonce, salt, tag, (int)keyType, (int)keyStrength, fileContents);
             stream.Position = 0;
             stream.Write(G.ExpectedMagicSequence);
             stream.Write([G.ExpectedVersion]);
-            stream.Write(nonce);
-            stream.Write(salt);
-            stream.Write(tag);
-            stream.Write([(byte)keyType]);
-            stream.Write([(byte)keyStrength]);
-            stream.Write(fileContents);
-            stream.Close();
+            stream.Write(c.Nonce);
+            stream.Write(c.Salt);
+            stream.Write(c.Tag);
+            stream.Write([(byte)c.KeyType]);
+            stream.Write([(byte)c.KeyStrength]);
+            stream.Write(c.Contents);
         }
 
-        private  static void SaveSanityCheck(byte[] nonce, byte[] salt, byte[] tag)
+        private  static void SanityCheck(byte[] nonce, byte[] salt, byte[] tag)
         {
-            if (nonce.Length != G.NonceSize || salt.Length != salt.Length || tag.Length != G.TagSize)
+            if (nonce.Length != G.NonceSize || salt.Length != G.SaltSize || tag.Length != G.TagSize)
+
             {
                 throw new FileInterfaceException($"Invalid file parameters");
             }
@@ -118,5 +114,5 @@ namespace a4crypt
             }
         }
     }
-    class FileInterfaceException(string message) : Exception(message);
+    public class FileInterfaceException(string message) : Exception(message);
 }
