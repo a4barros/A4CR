@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace a4crypt
@@ -34,6 +35,8 @@ namespace a4crypt
         public static A4CryptFile Open(string inputPath)
         {
             using var stream = File.Open(inputPath, FileMode.Open, FileAccess.Read);
+            if (stream.Length > int.MaxValue)
+                throw new CryptographicException("File too large");
             HeaderCheck(stream);
 
             stream.Position = G.NonceStart;

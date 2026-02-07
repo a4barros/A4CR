@@ -7,7 +7,7 @@ using Konscious.Security.Cryptography;
 
 namespace a4crypt
 {
-    internal class Core
+    internal class A4CryptCore
     {
         private const int KeySize = G.KeySize;
         public static byte[] DeriveKey(string password, byte[] salt, G.KeyTypes keyType, G.KeyStrengths keyStrength)
@@ -45,13 +45,13 @@ namespace a4crypt
         }
         private static byte[] GenSalt()
         {
-            byte[] salt = new byte[16];
+            byte[] salt = new byte[G.SaltSize];
             RandomNumberGenerator.Fill(salt);
             return salt;
         }
         private static byte[] GenNonce()
         {
-            byte[] nonce = new byte[12];
+            byte[] nonce = new byte[G.NonceSize];
             RandomNumberGenerator.Fill(nonce);
             return nonce;
         }
@@ -63,9 +63,12 @@ namespace a4crypt
             byte[] key = DeriveKey(password, salt, keyType, keyStrength);
             byte[] tag = new byte[G.TagSize];
 
-            var stream = File.Open(inputPath, FileMode.Open, FileAccess.Read);
+            using var stream = File.Open(inputPath, FileMode.Open, FileAccess.Read);
+            if (stream.Length > int.MaxValue)
+                throw new CryptographicException("File too large");
 
-            var aad = GenAAD(salt);
+
+            var aad = GenAAD(salt, keyType, keyStrength);
 
             byte[] output = new byte[stream.Length];
             byte[] fileContents = new byte[stream.Length];
@@ -74,26 +77,41 @@ namespace a4crypt
             stream.ReadExactly(fileContents);
             aes.Encrypt(nonce, fileContents, output, tag, aad);
             CryptographicOperations.ZeroMemory(key);
-            CryptFileParser.Save(outputPath, nonce, salt, tag, keyType, keyStrength, output);
+            A4CryptFile.Save(outputPath, nonce, salt, tag, keyType, keyStrength, output);
         }
 
-        private static byte[] GenAAD(byte[] salt)
+        private static byte[] GenAAD(byte[] salt, G.KeyTypes keyType, G.KeyStrengths keyStrength)
         {
-            var aad = new byte[G.MagicSize + G.VersionSize + G.SaltSize];
-            Buffer.BlockCopy(G.ExpectedMagicSequence, 0, aad, 0, G.MagicSize);
-            aad[G.MagicSize] = (byte)G.ExpectedVersion;
-            Buffer.BlockCopy(salt, 0, aad, G.MagicSize + G.VersionSize, G.SaltSize);
+            var aad = new byte[
+                G.MagicSize +
+                G.VersionSize +
+                G.SaltSize +
+                G.KeyTypeSize +
+                G.KeyStrengthSize
+            ];
+
+            int offset = 0;
+            Buffer.BlockCopy(G.ExpectedMagicSequence, 0, aad, offset, G.MagicSize);
+            offset += G.MagicSize;
+
+            aad[offset++] = (byte)G.ExpectedVersion;
+            Buffer.BlockCopy(salt, 0, aad, offset, G.SaltSize);
+            offset += G.SaltSize;
+
+            aad[offset++] = (byte)keyType;
+            aad[offset++] = (byte)keyStrength;
+
             return aad;
         }
 
-        public static void Decrypt(string inputPath, string outputPath, string password,
-            G.KeyTypes keyType = G.KeyTypes.Argon2id, G.KeyStrengths keyStrength = G.KeyStrengths.High)
+
+        public static void Decrypt(string inputPath, string outputPath, string password)
         {
-            var encryptedFile = CryptFileParser.Open(inputPath);
-            byte[] key = DeriveKey(password, encryptedFile.Salt, keyType, keyStrength);
+            var encryptedFile = A4CryptFile.Open(inputPath);
+            byte[] key = DeriveKey(password, encryptedFile.Salt, encryptedFile.KeyType, encryptedFile.KeyStrength);
             using AesGcm aes = new AesGcm(key, G.TagSize);
             byte[] output = new byte[encryptedFile.Contents.Length];
-            var aad = GenAAD(encryptedFile.Salt);
+            var aad = GenAAD(encryptedFile.Salt, encryptedFile.KeyType, encryptedFile.KeyStrength);
             aes.Decrypt(encryptedFile.Nonce, encryptedFile.Contents, encryptedFile.Tag, output, aad);
             CryptographicOperations.ZeroMemory(key);
             File.WriteAllBytes(outputPath, output);
