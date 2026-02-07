@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -7,7 +8,7 @@ using Konscious.Security.Cryptography;
 
 namespace a4crypt
 {
-    internal class A4CryptCore
+    public class A4CryptCore
     {
         private const int KeySize = G.KeySize;
         public static byte[] DeriveKey(string password, byte[] salt, G.KeyTypes keyType, G.KeyStrengths keyStrength)
@@ -112,7 +113,14 @@ namespace a4crypt
             using AesGcm aes = new AesGcm(key, G.TagSize);
             byte[] output = new byte[encryptedFile.Contents.Length];
             var aad = GenAAD(encryptedFile.Salt, encryptedFile.KeyType, encryptedFile.KeyStrength);
-            aes.Decrypt(encryptedFile.Nonce, encryptedFile.Contents, encryptedFile.Tag, output, aad);
+            try
+            {
+                aes.Decrypt(encryptedFile.Nonce, encryptedFile.Contents, encryptedFile.Tag, output, aad);
+            }
+            catch (AuthenticationTagMismatchException)
+            {
+                throw new CryptographicException("Wrong password.");
+            }
             CryptographicOperations.ZeroMemory(key);
             File.WriteAllBytes(outputPath, output);
         }
