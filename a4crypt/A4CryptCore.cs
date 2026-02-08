@@ -14,7 +14,7 @@ namespace a4crypt
         public static byte[] DeriveKey(string password, byte[] salt, G.KeyTypes keyType, G.KeyStrengths keyStrength)
         {
             int idx = (int)keyStrength;
-            if ((uint)idx >= 4)
+            if ((uint)idx >= 4) // TODO: Change to enum size
             {
                 throw new CryptographicException("Invalid key strength");
             }
@@ -35,7 +35,7 @@ namespace a4crypt
                     {
                         Salt = salt,
                         DegreeOfParallelism = parallelism,
-                        MemorySize = memoryMB * 1024,
+                        MemorySize = memoryMB * 1000,
                         Iterations = time,
                     };
                     return argon2.GetBytes(G.KeySize);
@@ -76,6 +76,7 @@ namespace a4crypt
 
             using AesGcm aes = new AesGcm(key, G.TagSize);
             stream.ReadExactly(fileContents);
+            // TODO: Use streaming
             aes.Encrypt(nonce, fileContents, output, tag, aad);
             CryptographicOperations.ZeroMemory(key);
             A4CryptFile.Save(outputPath, nonce, salt, tag, keyType, keyStrength, output);
@@ -121,7 +122,10 @@ namespace a4crypt
             {
                 throw new CryptographicException("Wrong password.");
             }
-            CryptographicOperations.ZeroMemory(key);
+            finally
+            {
+                CryptographicOperations.ZeroMemory(key);
+            }
             File.WriteAllBytes(outputPath, output);
         }
     }
