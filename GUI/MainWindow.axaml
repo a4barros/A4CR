@@ -1,0 +1,21 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="GUI.MainWindow"
+        Title="GUI">
+    <Grid
+      HorizontalAlignment="Left" 
+      VerticalAlignment="Top" 
+      Width="600" 
+      Height="165"
+      ColumnDefinitions="Auto"
+      RowDefinitions="Auto Auto Auto"
+      Margin="30 200">
+    
+    <Button Grid.Row="0" Grid.Column="2" Content="Select file" Margin="10,0,10,15" Click="SelectFileButton_Click"/>
+    <Button Grid.Row="2" Grid.Column="2" Content="Options" Margin="10,0,10,15" />
+    <Button Grid.Row="1" Grid.Column="2" Content="Encrypt/Decrypt" Margin="10,0,10,15" Click="EncryptButton_Click"/>
+</Grid>
+</Window>
