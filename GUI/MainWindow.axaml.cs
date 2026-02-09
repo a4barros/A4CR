@@ -18,7 +18,6 @@ namespace GUI
 
         private async void SelectFileButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            ResetControls();
             var topLevel = GetTopLevel(this);
 
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
@@ -27,6 +26,12 @@ namespace GUI
                 AllowMultiple = false,
             });
 
+            if (files is null || files.Count < 1)
+            {
+                return;
+            }
+
+            ResetControls();
             W.selectedFilePath = files[0].Path.AbsolutePath;
             W.IsSelectedFileEncrypted = A4CryptFile.IsFileEncrypted(W.selectedFilePath);
 
