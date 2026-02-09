@@ -1,0 +1,18 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="200"
+        Width="500"
+        Height="200"
+        CanMaximize="False"
+        CanMinimize="False"
+        CanResize="False"
+        x:Class="GUI.ErrorDialog"
+        Title="ErrorDialog"
+        WindowStartupLocation="CenterOwner">
+  <StackPanel VerticalAlignment="Center">
+	  <Label x:Name="MessageLabel" HorizontalAlignment="Center" Margin="30">Error message</Label>
+      <Button HorizontalAlignment="Center" Margin="0 20" Click="Button_Click">OK</Button>
+  </StackPanel>
+</Window>

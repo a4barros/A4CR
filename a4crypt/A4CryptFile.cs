@@ -34,9 +34,7 @@ namespace a4crypt
         }
         public static A4CryptFile Open(string inputPath)
         {
-            using var stream = File.Open(inputPath, FileMode.Open, FileAccess.Read);
-            if (stream.Length > int.MaxValue)
-                throw new CryptographicException("File too large");
+            using FileStream stream = OpenForReading(inputPath);
             HeaderCheck(stream);
 
             stream.Position = G.NonceStart;
@@ -64,6 +62,43 @@ namespace a4crypt
 
             return new A4CryptFile(nonce, salt, tag, keytype, keystrength, fileContents);
         }
+
+        public static A4CryptFile OpenHeadersOnly(string inputPath)
+        {
+            using FileStream stream = OpenForReading(inputPath);
+            HeaderCheck(stream);
+
+            stream.Position = G.NonceStart;
+            var nonce = new byte[G.NonceSize];
+            stream.ReadExactly(nonce);
+
+            stream.Position = G.SaltStart;
+            var salt = new byte[G.SaltSize];
+            stream.ReadExactly(salt);
+
+            stream.Position = G.TagStart;
+            var tag = new byte[G.TagSize];
+            stream.ReadExactly(tag);
+
+            stream.Position = G.KeyTypeStart;
+            int keytype = stream.ReadByte();
+
+            stream.Position = G.KeyStrengthStart;
+            int keystrength = stream.ReadByte();
+
+            return new A4CryptFile(nonce, salt, tag, keytype, keystrength, []);
+        }
+
+        private static FileStream OpenForReading(string inputPath)
+        {
+            var stream = File.Open(inputPath, FileMode.Open, FileAccess.Read);
+            if (stream.Length > int.MaxValue)
+                throw new CryptographicException("File too large");
+            return stream;
+        }
+
+
+
         public static void Save(string outputPath, byte[] nonce, byte[] salt, byte[] tag, G.KeyTypes keyType, G.KeyStrengths keyStrength, byte[] fileContents)
         {
             using var stream = File.Open(outputPath, FileMode.CreateNew, FileAccess.Write);
@@ -116,6 +151,20 @@ namespace a4crypt
                 throw new FileInterfaceException($"Invalid version {version}");
             }
         }
+
+        public static bool IsFileEncrypted(string inputPath)
+        {
+            using var stream = OpenForReading(inputPath);
+            try
+            {
+                HeaderCheck(stream);
+            }
+            catch (FileInterfaceException)
+            {
+                return false;
+            }
+            return true;
+        }   
     }
     public class FileInterfaceException(string message) : Exception(message);
 }
