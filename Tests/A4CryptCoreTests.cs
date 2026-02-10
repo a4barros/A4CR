@@ -17,8 +17,18 @@ namespace Tests
             RandomNumberGenerator.Fill(b);
             return b;
         }
-        [Fact]
-        public void EncryptDecrypt_RoundTrip_Argon2_Succeeds()
+        public static IEnumerable<object[]> AllKeyCombinations()
+        {
+            foreach (G.KeyTypes keyType in Enum.GetValues<G.KeyTypes>())
+                foreach (G.KeyStrengths strength in Enum.GetValues<G.KeyStrengths>())
+                    yield return new object[] { keyType, strength };
+        }
+
+        [Theory]
+        [MemberData(nameof(AllKeyCombinations))]
+        public void EncryptDecrypt_RoundTrip_AllKeys_Succeeds(
+            G.KeyTypes keyType,
+            G.KeyStrengths keyStrength)
         {
             var input = TempFile();
             var encrypted = TempFile();
@@ -27,49 +37,37 @@ namespace Tests
             var plaintext = RandomBytes(4096);
             File.WriteAllBytes(input, plaintext);
 
+            const string password = "correct horse battery staple";
+
             A4CryptCore.Encrypt(
                 input,
                 encrypted,
-                "correct horse battery staple",
-                G.KeyTypes.Argon2id,
-                G.KeyStrengths.Medium
+                password,
+                keyType,
+                keyStrength
             );
+
+            var cipherBytes = File.ReadAllBytes(encrypted);
+            Assert.NotEqual(plaintext, cipherBytes);
+
+            Assert.True(cipherBytes.Length > plaintext.Length);
+
+            Assert.ThrowsAny<CryptographicException>(() =>
+            {
+                A4CryptCore.Decrypt(encrypted, TempFile(), "wrong password");
+            });
+            Console.WriteLine($"Testing {keyType} {keyStrength}");
 
             A4CryptCore.Decrypt(
                 encrypted,
                 output,
-                "correct horse battery staple"
+                password
             );
 
             var decrypted = File.ReadAllBytes(output);
             Assert.Equal(plaintext, decrypted);
         }
-        [Fact]
-        public void EncryptDecrypt_RoundTrip_PBKDF2_Succeeds()
-        {
-            var input = TempFile();
-            var encrypted = TempFile();
-            var output = TempFile();
 
-            var plaintext = RandomBytes(1024);
-            File.WriteAllBytes(input, plaintext);
-
-            A4CryptCore.Encrypt(
-                input,
-                encrypted,
-                "password123",
-                G.KeyTypes.PBKDF2,
-                G.KeyStrengths.High
-            );
-
-            A4CryptCore.Decrypt(
-                encrypted,
-                output,
-                "password123"
-            );
-
-            Assert.Equal(plaintext, File.ReadAllBytes(output));
-        }
         [Fact]
         public void Decrypt_WrongPassword_Throws()
         {
