@@ -8,19 +8,54 @@
         Width="700"
         Height="400"
         CanMaximize="False"
-        CanResize="False"
-        Title="A4CR">
-    <StackPanel
-        Orientation="Horizontal"
-        DragDrop.AllowDrop="True"
-        DragDrop.Drop="Window_Drop">
-        <StackPanel VerticalAlignment="Center">
-            <Button x:Name="SelectFileButton" HorizontalAlignment="Center" Content="Select file" Margin="60 20" Padding="30 10" MinWidth="10" Click="SelectFileButton_Click"/>
-            <ListBox Height="200" Width="400" Margin="20" x:Name="FilesList"></ListBox>
-        </StackPanel>
-        <StackPanel Margin="50 0" VerticalAlignment="Center">
-            <Button x:Name="OptionsButton" HorizontalAlignment="Center" Content="Options" Margin="0 30" Padding="30 10" IsEnabled="False" Click="OptionsButton_Click"/>
-            <Button x:Name="EncDecButton" HorizontalAlignment="Center" Content="Encrypt/Decrypt" Padding="30 10" IsEnabled="False" Click="EncryptButton_Click"/>
-        </StackPanel>
-    </StackPanel>
+        Title="A4CR"
+        Background="#111">
+    <Grid RowDefinitions="*,Auto">
+
+        <Grid x:Name="Main" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Button x:Name="SelectFileButton"
+                    Content="Select file"
+                    Padding="30 10"
+                    HorizontalAlignment="Left"
+                    Margin="0 0 0 10"
+                    Click="SelectFileButton_Click"/>
+
+            <ListBox x:Name="FilesList"
+                     Grid.Row="1"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch"/>
+        </Grid>
+
+        <Border x:Name="BottomBar" Grid.Row="1"
+        Background="#222"
+        Padding="20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal">
+                    <Button x:Name="OptionsButton"
+                            Content="Options"
+                            Padding="30 10"
+                            Margin="0 0 10 0"
+                            IsEnabled="False"
+                            Click="OptionsButton_Click"/>
+
+                    <Button x:Name="EncDecButton"
+                            Content="Encrypt/Decrypt"
+                            Padding="30 10"
+                            IsEnabled="False"
+                            Click="EncryptButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
 </Window>

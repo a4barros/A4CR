@@ -108,20 +108,6 @@ namespace GUI
 
         }
 
-        private async void Window_Drop(object? sender, DragEventArgs e)
-        {
-            var files = e.DataTransfer.TryGetFiles();
-            if (files != null)
-            {
-                if (files.Length > 1)
-                {
-                    var error = new ErrorDialog("You can drop a single file only");
-                    await error.ShowDialog(this);
-                }
-                Console.WriteLine(files[0].Path.AbsolutePath);
-            }
-        }
-
         private async void OptionsButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             var options = new OptionsWindow();
