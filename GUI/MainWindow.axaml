@@ -2,21 +2,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="400"
+        mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="400"
         x:Class="GUI.MainWindow"
         WindowStartupLocation="CenterScreen"
-        Width="400"
+        Width="700"
         Height="400"
         CanMaximize="False"
         CanResize="False"
-        Title="GUI">
+        Title="A4CR">
     <StackPanel
+        Orientation="Horizontal"
         DragDrop.AllowDrop="True"
         DragDrop.Drop="Window_Drop">
-        <Button x:Name="SelectFileButton" HorizontalAlignment="Center" Content="Select file" Margin="30" Padding="30 20" MinWidth="10" Click="SelectFileButton_Click"/>
-        <Label x:Name="FileLabel" HorizontalAlignment="Center" Content="(no file)"/>
-        <Button x:Name="EncDecButton" HorizontalAlignment="Center" Content="Encrypt/Decrypt" Margin="30" Padding="30 20" IsEnabled="False" Click="EncryptButton_Click"/>
-        <Label x:Name="EncryptionStatus" HorizontalAlignment="Center" Content=""/>
-        <Button x:Name="OptionsButton" HorizontalAlignment="Center" Content="Options" Margin="30" Padding="30 20" IsEnabled="False" Click="OptionsButton_Click"/>
+        <StackPanel VerticalAlignment="Center">
+            <Button x:Name="SelectFileButton" HorizontalAlignment="Center" Content="Select file" Margin="60 20" Padding="30 10" MinWidth="10" Click="SelectFileButton_Click"/>
+            <ListBox Height="200" Width="400" Margin="20" x:Name="FilesList"></ListBox>
+        </StackPanel>
+        <StackPanel Margin="50 0" VerticalAlignment="Center">
+            <Button x:Name="OptionsButton" HorizontalAlignment="Center" Content="Options" Margin="0 30" Padding="30 10" IsEnabled="False" Click="OptionsButton_Click"/>
+            <Button x:Name="EncDecButton" HorizontalAlignment="Center" Content="Encrypt/Decrypt" Padding="30 10" IsEnabled="False" Click="EncryptButton_Click"/>
+        </StackPanel>
     </StackPanel>
 </Window>

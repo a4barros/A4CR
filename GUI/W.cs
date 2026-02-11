@@ -7,8 +7,8 @@ namespace GUI
 {
     internal static class W
     {
-        public static string selectedFilePath = "";
-        public static bool IsSelectedFileEncrypted = false;
+        public static List<string> selectedFilePathList = [];
+        public static bool IsSelectedFilesEncrypted = false;
         public static G.KeyStrengths SelectedKeyStrength = G.KeyStrengths.High;
         public static G.KeyTypes SelectedKeyType = G.KeyTypes.Argon2id;
     }

@@ -23,7 +23,7 @@ namespace GUI
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
                 Title = "Open File",
-                AllowMultiple = false,
+                AllowMultiple = true,
             });
 
             if (files is null || files.Count < 1)
@@ -32,22 +32,33 @@ namespace GUI
             }
 
             ResetControls();
-            W.selectedFilePath = files[0].Path.AbsolutePath;
-            W.IsSelectedFileEncrypted = A4CryptFile.IsFileEncrypted(W.selectedFilePath);
+
+            var firstFile = files[0];
+            W.IsSelectedFilesEncrypted = A4CryptFile.IsFileEncrypted(firstFile.TryGetLocalPath());
+
+            foreach (var file in files)
+            {
+                var filePath = file.TryGetLocalPath();
+                W.selectedFilePathList.Add(filePath);
+                if (W.IsSelectedFilesEncrypted != A4CryptFile.IsFileEncrypted(filePath))
+                {
+                    var error = new ErrorDialog("You selected both encrypted and unencrypted files");
+                    await error.ShowDialog(this);
+                    ResetControls();
+                }
+                FilesList.Items.Add(filePath.Split("\\")[^1]);
+            }
 
             EncDecButton.IsEnabled = true;
-            if (W.IsSelectedFileEncrypted)
+            if (W.IsSelectedFilesEncrypted)
             {
                 EncDecButton.Content = "Decrypt";
-                var fileHeaders = A4CryptFile.OpenHeadersOnly(W.selectedFilePath);
-                EncryptionStatus.Content = $"{fileHeaders.KeyType} {fileHeaders.KeyStrength}";
             }
             else
             {
                 EncDecButton.Content = "Encrypt";
                 OptionsButton.IsEnabled = true;
             }
-            FileLabel.Content = W.selectedFilePath.Split("/")[^1];
         }
         private async void EncryptButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
@@ -61,22 +72,28 @@ namespace GUI
 
             try
             {
-                if (W.IsSelectedFileEncrypted)
+                if (W.IsSelectedFilesEncrypted)
                 {
-                    A4CryptCore.Decrypt(
-                        W.selectedFilePath,
-                        W.selectedFilePath.Replace(".a4cr", ""),
+                    foreach (var filePath in W.selectedFilePathList)
+                    {
+                        A4CryptCore.Decrypt(
+                        filePath,
+                        filePath.Replace(".a4cr", ""),
                         password
-                    );
+                        );
+                    }
                 }
                 else
                 {
-                    A4CryptCore.Encrypt(
-                        W.selectedFilePath,
-                        $"{W.selectedFilePath}.a4cr",
+                    foreach (var filePath in W.selectedFilePathList)
+                    {
+                        A4CryptCore.Encrypt(
+                        filePath,
+                        $"{filePath}.a4cr",
                         password,
                         W.SelectedKeyType,
                         W.SelectedKeyStrength);
+                    }
                 }
             }
             catch (Exception ex)
@@ -86,7 +103,6 @@ namespace GUI
             }
             finally
             {
-                W.selectedFilePath = "";
                 ResetControls();
             }
 
@@ -117,8 +133,8 @@ namespace GUI
             EncDecButton.IsEnabled = false;
             OptionsButton.IsEnabled = false;
             EncDecButton.Content = "Encrypt/Decrypt";
-            FileLabel.Content = "(no file)";
-            EncryptionStatus.Content = "";
+            W.selectedFilePathList.Clear();
+            FilesList.Items.Clear();
         }
     }
 }

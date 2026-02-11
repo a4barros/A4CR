@@ -13,6 +13,6 @@
         WindowStartupLocation="CenterOwner">
   <StackPanel VerticalAlignment="Center">
 	  <Label x:Name="MessageLabel" HorizontalAlignment="Center" Margin="30">Error message</Label>
-      <Button HorizontalAlignment="Center" Margin="0 20" Click="Button_Click">OK</Button>
+      <Button HorizontalAlignment="Center" Margin="0 20" Click="Button_Click" Padding="30 10">OK</Button>
   </StackPanel>
 </Window>
