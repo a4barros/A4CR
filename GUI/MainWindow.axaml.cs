@@ -63,24 +63,30 @@ namespace GUI
         private async void EncryptButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             string password, passwordConfirmation;
-            do
-            {
-                var passwordDialog = new PasswordDialog();
-                password = await passwordDialog.ShowDialog<string>(this);
+  
+            var passwordDialog = new PasswordDialog();
+            password = await passwordDialog.ShowDialog<string>(this);
 
+            if (password is null)
+            {
+                return;
+            }
+
+            if (W.IsSelectedFilesEncrypted == false)
+            {
                 var passwordDialogConfirmation = new PasswordDialog(IsConfirmDialog: true);
                 passwordConfirmation = await passwordDialogConfirmation.ShowDialog<string>(this);
-
-                if (password is null || passwordConfirmation is null)
-                {
-                    return;
-                }
                 if (password != passwordConfirmation)
                 {
                     var error = new ErrorDialog("The two passwords do not match");
                     await error.ShowDialog(this);
+                    return;
                 }
-            } while (password != passwordConfirmation);
+                if (passwordConfirmation is null)
+                {
+                    return;
+                }
+            }
 
             try
             {
@@ -94,6 +100,10 @@ namespace GUI
                         password
                         );
                     }
+                    foreach (var filePath in W.selectedFilePathList)
+                    {
+                        File.Delete(filePath);
+                    }
                 }
                 else
                 {
@@ -105,6 +115,15 @@ namespace GUI
                         password,
                         W.SelectedKeyType,
                         W.SelectedKeyStrength);
+                    }
+                    var question = new QuestionDialog("Delete original file(s)?", "DELETE");
+                    var deleteFiles = await question.ShowDialog<bool>(this);
+                    if (deleteFiles)
+                    {
+                        foreach (var filePath in W.selectedFilePathList)
+                        {
+                            File.Delete(filePath);
+                        }
                     }
                 }
             }

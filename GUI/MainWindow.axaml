@@ -48,13 +48,15 @@
                             Padding="30 10"
                             Margin="0 0 10 0"
                             IsEnabled="False"
-                            Click="OptionsButton_Click"/>
+                            Click="OptionsButton_Click"
+                            CornerRadius="30"/>
 
                     <Button x:Name="EncDecButton"
                             Content="Encrypt/Decrypt"
                             Padding="30 10"
                             IsEnabled="False"
-                            Click="EncryptButton_Click"/>
+                            Click="EncryptButton_Click"
+                            CornerRadius="30"/>
                 </StackPanel>
             </Grid>
         </Border>

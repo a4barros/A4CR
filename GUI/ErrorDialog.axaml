@@ -14,8 +14,22 @@
  <Grid Margin="50"
       RowDefinitions="Auto, Auto"
       ColumnDefinitions="*">
-	  <Label Grid.Row="0" x:Name="MessageLabel" HorizontalAlignment="Center" Margin="30">Error message</Label>
-      <Button Grid.Row="1" CornerRadius="30" HorizontalAlignment="Center" Margin="0 20" Click="Button_Click" Padding="30 10">OK</Button>
+	  <Label
+            Grid.Row="0"
+            x:Name="MessageLabel"
+            HorizontalAlignment="Center"
+            Margin="30">
+          Error message
+      </Label>
+      <Button
+            Grid.Row="1"
+            CornerRadius="30"
+            HorizontalAlignment="Center"
+            Margin="20"
+            Click="Button_Click"
+            Padding="30 10">
+          OK
+      </Button>
   </Grid>
 
 </Window>

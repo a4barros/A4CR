@@ -1,0 +1,40 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="GUI.QuestionDialog"
+        Title="QuestionDialog">
+   <Grid Margin="50"
+    RowDefinitions="Auto, Auto"
+    ColumnDefinitions="*">
+    <Label
+        Grid.Row="0"
+        x:Name="QuestionLabel"
+        HorizontalAlignment="Center"
+        Margin="30">
+        Question
+    </Label>
+    <StackPanel 
+        Grid.Row="1"
+        Orientation="Horizontal"
+        HorizontalAlignment="Center" >
+        <Button
+            x:Name="ButtonYes"
+            CornerRadius="30"
+            Margin="20"
+            Click="Button_Yes"
+            Padding="30 10">
+            Yes
+        </Button>
+        <Button 
+            x:Name="ButtonNo"
+            CornerRadius="30"
+            Margin="20"
+            Click="Button_No"
+            Padding="30 10">
+            No
+        </Button>
+    </StackPanel>
+    </Grid>
+</Window>
