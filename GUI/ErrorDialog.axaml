@@ -9,10 +9,13 @@
         CanMinimize="False"
         CanResize="False"
         x:Class="GUI.ErrorDialog"
-        Title="ErrorDialog"
+        Title="Error"
         WindowStartupLocation="CenterOwner">
-  <StackPanel VerticalAlignment="Center">
-	  <Label x:Name="MessageLabel" HorizontalAlignment="Center" Margin="30">Error message</Label>
-      <Button HorizontalAlignment="Center" Margin="0 20" Click="Button_Click" Padding="30 10">OK</Button>
-  </StackPanel>
+ <Grid Margin="50"
+      RowDefinitions="Auto, Auto"
+      ColumnDefinitions="*">
+	  <Label Grid.Row="0" x:Name="MessageLabel" HorizontalAlignment="Center" Margin="30">Error message</Label>
+      <Button Grid.Row="1" CornerRadius="30" HorizontalAlignment="Center" Margin="0 20" Click="Button_Click" Padding="30 10">OK</Button>
+  </Grid>
+
 </Window>

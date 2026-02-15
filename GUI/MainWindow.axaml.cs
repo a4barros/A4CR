@@ -62,13 +62,25 @@ namespace GUI
         }
         private async void EncryptButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            var passwordDialog = new PasswordDialog();
-            var password = await passwordDialog.ShowDialog<string>(this);
-
-            if (password is null)
+            string password, passwordConfirmation;
+            do
             {
-                return;
-            }
+                var passwordDialog = new PasswordDialog();
+                password = await passwordDialog.ShowDialog<string>(this);
+
+                var passwordDialogConfirmation = new PasswordDialog(IsConfirmDialog: true);
+                passwordConfirmation = await passwordDialogConfirmation.ShowDialog<string>(this);
+
+                if (password is null || passwordConfirmation is null)
+                {
+                    return;
+                }
+                if (password != passwordConfirmation)
+                {
+                    var error = new ErrorDialog("The two passwords do not match");
+                    await error.ShowDialog(this);
+                }
+            } while (password != passwordConfirmation);
 
             try
             {
