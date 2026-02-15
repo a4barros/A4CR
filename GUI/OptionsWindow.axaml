@@ -2,27 +2,82 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="300"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="330"
         x:Class="GUI.OptionsWindow"
-        Width="500"
-        Height="450"
+        Background="#111"
+        Width="400"
+        Height="330"
         Title="Options"
-        WindowStartupLocation="CenterOwner">
-    <StackPanel Margin="40" Orientation="Vertical">
-      <StackPanel Orientation="Horizontal">
-          <StackPanel Margin="50 20" VerticalAlignment="Top">
-            <Label>Key Type</Label>
-	        <RadioButton x:Name="HashTypeArgon2id" GroupName="HashType" IsChecked="True">Argon2id</RadioButton>
-            <RadioButton x:Name="HashTypePBKDF2" GroupName="HashType">PBKDF2</RadioButton>
-          </StackPanel>
-          <StackPanel VerticalAlignment="Top">
-            <Label Margin="0 20 0 0">Key Strength</Label>
-            <RadioButton x:Name="KeyStrengthLow" GroupName="KeyStrength">Low</RadioButton>
-            <RadioButton x:Name="KeyStrengthMedium" GroupName="KeyStrength">Medium</RadioButton>
-            <RadioButton x:Name="KeyStrengthHigh" GroupName="KeyStrength" IsChecked="True">High</RadioButton>
-            <RadioButton x:Name="KeyStrengthUltra" GroupName="KeyStrength">Ultra</RadioButton>
-          </StackPanel>
-      </StackPanel>
-          <Button HorizontalAlignment="Right" Margin="20" Padding="30 10" Click="OKButton_Click">OK</Button>
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        CanMaximize="False">
+<Grid Margin="50"
+      RowDefinitions="Auto, Auto"
+      ColumnDefinitions="*, *">
+
+    <StackPanel Grid.Row="0"
+                Grid.Column="0"
+                Margin="0 0 30 0">
+        <TextBlock Text="Key Type"
+                   FontWeight="SemiBold"
+                   Margin="0 0 0 8"/>
+
+        <RadioButton x:Name="HashTypeArgon2id"
+                     GroupName="HashType"
+                     IsChecked="True"
+                     Margin="0 4">
+            Argon2id
+        </RadioButton>
+
+        <RadioButton x:Name="HashTypePBKDF2"
+                     GroupName="HashType"
+                     Margin="0 4">
+            PBKDF2
+        </RadioButton>
     </StackPanel>
+
+    <StackPanel Grid.Row="0"
+                Grid.Column="1">
+        <TextBlock Text="Key Strength"
+                   FontWeight="SemiBold"
+                   Margin="0 0 0 8"/>
+
+        <RadioButton x:Name="KeyStrengthLow"
+                     GroupName="KeyStrength"
+                     Margin="0 4">
+            Low
+        </RadioButton>
+
+        <RadioButton x:Name="KeyStrengthMedium"
+                     GroupName="KeyStrength"
+                     Margin="0 4">
+            Medium
+        </RadioButton>
+
+        <RadioButton x:Name="KeyStrengthHigh"
+                     GroupName="KeyStrength"
+                     IsChecked="True"
+                     Margin="0 4">
+            High
+        </RadioButton>
+
+        <RadioButton x:Name="KeyStrengthUltra"
+                     GroupName="KeyStrength"
+                     Margin="0 4">
+            Ultra
+        </RadioButton>
+    </StackPanel>
+
+    <Button Grid.Row="1"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Right"
+            Margin="0 30 0 0"
+            Padding="30 10"
+            CornerRadius="30"
+            Click="OKButton_Click">
+        OK
+    </Button>
+
+</Grid>
+
 </Window>

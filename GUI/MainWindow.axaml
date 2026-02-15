@@ -23,7 +23,8 @@
                     Padding="30 10"
                     HorizontalAlignment="Left"
                     Margin="0 0 0 10"
-                    Click="SelectFileButton_Click"/>
+                    Click="SelectFileButton_Click"
+                    CornerRadius="30"/>
 
             <ListBox x:Name="FilesList"
                      Grid.Row="1"
