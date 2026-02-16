@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using a4crypt;
 using Avalonia.Controls;
@@ -31,39 +32,18 @@ namespace GUI
                 return;
             }
 
+            string[] paths = files
+                .Select(x => x.TryGetLocalPath() ?? "")
+                .Where(p => p != null)
+                .ToArray();
+            
             ResetControls();
-
-            var firstFile = files[0];
-            W.IsSelectedFilesEncrypted = A4CryptFile.IsFileEncrypted(firstFile.TryGetLocalPath());
-
-            foreach (var file in files)
-            {
-                var filePath = file.TryGetLocalPath();
-                W.selectedFilePathList.Add(filePath);
-                if (W.IsSelectedFilesEncrypted != A4CryptFile.IsFileEncrypted(filePath))
-                {
-                    var error = new ErrorDialog("You selected both encrypted and unencrypted files");
-                    await error.ShowDialog(this);
-                    ResetControls();
-                }
-                FilesList.Items.Add(filePath.Split("\\")[^1]);
-            }
-
-            EncDecButton.IsEnabled = true;
-            if (W.IsSelectedFilesEncrypted)
-            {
-                EncDecButton.Content = "Decrypt";
-            }
-            else
-            {
-                EncDecButton.Content = "Encrypt";
-                OptionsButton.IsEnabled = true;
-            }
+            await HandleFiles(paths);
         }
         private async void EncryptButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             string password, passwordConfirmation;
-  
+
             var passwordDialog = new PasswordDialog();
             password = await passwordDialog.ShowDialog<string>(this);
 
@@ -152,6 +132,73 @@ namespace GUI
             EncDecButton.Content = "Encrypt/Decrypt";
             W.selectedFilePathList.Clear();
             FilesList.Items.Clear();
+        }
+        private async Task HandleFiles(IEnumerable<string> filePaths)
+        {
+            bool? firstState = null;
+
+            foreach (var path in filePaths)
+            {
+                var isEncrypted = A4CryptFile.IsFileEncrypted(path);
+
+                if (firstState == null)
+                {
+                    firstState = isEncrypted;
+                    W.IsSelectedFilesEncrypted = isEncrypted;
+                }
+                else if (firstState != isEncrypted)
+                {
+                    var error = new ErrorDialog("You selected both encrypted and unencrypted files");
+                    await error.ShowDialog(this);
+                    ResetControls();
+                    return;
+                }
+
+                W.selectedFilePathList.Add(path);
+                FilesList.Items.Add(Path.GetFileName(path));
+            }
+
+            EncDecButton.IsEnabled = true;
+
+            if (W.IsSelectedFilesEncrypted)
+            {
+                EncDecButton.Content = "Decrypt";
+            }
+            else
+            {
+                EncDecButton.Content = "Encrypt";
+                OptionsButton.IsEnabled = true;
+            }
+        }
+
+        private async void Drop(object? sender, DragEventArgs e)
+        {
+            if (!e.DataTransfer.Contains(DataFormat.File))
+                return;
+
+            var files = e.DataTransfer.TryGetFiles();
+
+            if (files == null)
+                return;
+
+            string[] paths = files
+                .Select(x => x.TryGetLocalPath() ?? "")
+                .Where(p => p != null)
+                .ToArray();
+
+            await HandleFiles(paths);
+        }
+
+        private void DragOver(object? sender, DragEventArgs e)
+        {
+            if (e.DataTransfer.Contains(DataFormat.File))
+            {
+                e.DragEffects = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.DragEffects = DragDropEffects.None;
+            }
         }
     }
 }

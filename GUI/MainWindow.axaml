@@ -9,7 +9,10 @@
         Height="400"
         CanMaximize="False"
         Title="A4CR"
-        Background="#111">
+        Background="#111"
+        DragDrop.AllowDrop="True"
+        DragDrop.DragOver="DragOver"
+        DragDrop.Drop="Drop">
     <Grid RowDefinitions="*,Auto">
 
         <Grid x:Name="Main" Margin="20">
