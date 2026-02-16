@@ -21,13 +21,25 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Button x:Name="SelectFileButton"
-                    Content="Select file"
+            <StackPanel Orientation="Horizontal">
+				<Button x:Name="SelectFileButton"
+                    Content="Select file(s)"
+                    Padding="30 10"
+                    HorizontalAlignment="Left"
+                    Margin="0 0 10 10"
+                    Click="SelectFileButton_Click"
+                    CornerRadius="30"/>
+
+                <Button x:Name="ClearFileButton"
+                    Content="Clear list"
                     Padding="30 10"
                     HorizontalAlignment="Left"
                     Margin="0 0 0 10"
-                    Click="SelectFileButton_Click"
+                    Click="ClearFileButton_Click"
                     CornerRadius="30"/>
+            </StackPanel>
+            
+
 
             <ListBox x:Name="FilesList"
                      Grid.Row="1"

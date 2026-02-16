@@ -36,7 +36,7 @@ namespace GUI
                 .Select(x => x.TryGetLocalPath() ?? "")
                 .Where(p => p != null)
                 .ToArray();
-            
+
             ResetControls();
             await HandleFiles(paths);
         }
@@ -199,6 +199,11 @@ namespace GUI
             {
                 e.DragEffects = DragDropEffects.None;
             }
+        }
+
+        private void ClearFileButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            ResetControls();
         }
     }
 }
