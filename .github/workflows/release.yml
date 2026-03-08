@@ -58,9 +58,16 @@ jobs:
       - name: Install Inno Setup
         run: choco install innosetup
 
+      - name: Get version
+        id: version
+        run: |
+          $ver="${{ github.ref_name }}"
+          $ver=$ver.TrimStart("v")
+          echo "VERSION=$ver" >> $env:GITHUB_OUTPUT
+
       - name: Build Installer
         run: |
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
+          iscc /DMyAppVersion=${{ steps.version.outputs.VERSION }} installer.iss
 
       - name: Package artifacts
         run: |

@@ -1,10 +1,12 @@
+#define MyAppVersion "0.0.0"
+
 [Setup]
 AppName=A4crypt
-AppVersion=0.0.1
-DefaultDirName={pf}\A4crypt
+AppVersion={#MyAppVersion}
+DefaultDirName={commonpf}\A4crypt
 DefaultGroupName=A4crypt
 OutputDir=dist
-OutputBaseFilename=A4crypt-setup
+OutputBaseFilename=A4crypt-{#MyAppVersion}-setup
 Compression=lzma
 SolidCompression=yes
 
