@@ -11,7 +11,7 @@ permissions:
 jobs:
   test:
     name: Run Tests
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -30,7 +30,7 @@ jobs:
   release:
     name: Build & Release
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -56,6 +56,13 @@ jobs:
       - name: Release for macOS ARM
         run: dotnet publish GUI/GUI.csproj -c Release -r osx-arm64 -o publish/macos-arm64
 
+      - name: Install Inno Setup
+        run: choco install innosetup
+
+      - name: Build Installer
+        run: |
+          "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
+
       - name: Package artifacts
         run: |
           cd publish
@@ -72,4 +79,5 @@ jobs:
             publish/a4c-win-x64.zip
             publish/a4c-macos-x64.tar.gz
             publish/a4c-macos-arm64.tar.gz
+            dist/a4c-setup.exe
 
