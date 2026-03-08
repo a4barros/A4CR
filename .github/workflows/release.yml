@@ -43,7 +43,6 @@ jobs:
       - name: Restore
         run: dotnet restore
 
-
       - name: Release for Linux
         run: dotnet publish GUI/GUI.csproj -c Release -r linux-x64 -o publish/linux
 
@@ -67,7 +66,7 @@ jobs:
         run: |
           cd publish
           tar -czf a4c-linux-x64.tar.gz linux
-          zip -r a4c-win-x64.zip windows
+          Compress-Archive -Path windows\* -DestinationPath a4c-win-x64.zip
           tar -czf a4c-macos-x64.tar.gz macos-x64
           tar -czf a4c-macos-arm64.tar.gz macos-arm64
 
@@ -79,5 +78,5 @@ jobs:
             publish/a4c-win-x64.zip
             publish/a4c-macos-x64.tar.gz
             publish/a4c-macos-arm64.tar.gz
-            dist/a4c-setup.exe
+            dist/A4crypt-setup.exe
 
