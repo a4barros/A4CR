@@ -85,5 +85,5 @@ jobs:
             publish/a4c-win-x64.zip
             publish/a4c-macos-x64.tar.gz
             publish/a4c-macos-arm64.tar.gz
-            dist/A4crypt-setup.exe
+            dist/A4crypt-*-setup.exe
 
