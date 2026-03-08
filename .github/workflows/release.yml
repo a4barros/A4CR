@@ -45,16 +45,16 @@ jobs:
 
 
       - name: Release for Linux
-        run: dotnet publish a4crypt.CLI/a4c.CLI.csproj -c Release -r linux-x64 -o publish/linux/cli
+        run: dotnet publish GUI/GUI.csproj -c Release -r linux-x64 -o publish/linux
 
       - name: Release for Windows
         run: dotnet publish GUI/GUI.csproj -c Release -r win-x64 -o publish/windows
 
       - name: Release for macOS Intel
-        run: dotnet publish a4c.CLI/a4c.CLI.csproj -c Release -r osx-x64 -o publish/macos-x64/cli
+        run: dotnet publish GUI/GUI.csproj -c Release -r osx-x64 -o publish/macos-x64
 
       - name: Release for macOS ARM
-        run: dotnet publish a4c.CLI/a4c.CLI.csproj -c Release -r osx-arm64 -o publish/macos-arm64/cli
+        run: dotnet publish GUI/GUI.csproj -c Release -r osx-arm64 -o publish/macos-arm64
 
       - name: Package artifacts
         run: |
