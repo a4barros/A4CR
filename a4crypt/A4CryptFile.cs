@@ -130,6 +130,10 @@ namespace a4crypt
 
         private static void MagicSequenceCheck(FileStream stream)
         {
+            if (stream.Length < G.MagicSize)
+            {
+                throw new FileInterfaceException("File too short");
+            }
             byte[] MagicSequence = new byte[4];
             stream.Position = G.MagicStart;
             stream.ReadExactly(MagicSequence);
