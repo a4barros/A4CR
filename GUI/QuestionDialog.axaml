@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="GUI.QuestionDialog"
-        Background="#111"
+        Background="#1c1b23"
         CanMaximize="False"
         CanResize="False"
         SizeToContent="WidthAndHeight"
@@ -21,7 +21,7 @@
                    MaxWidth="520"/>
 
         <Border Grid.Row="1"
-                Background="#222"
+                Background="#223"
                 Padding="20">
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">

@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="330"
         x:Class="GUI.OptionsWindow"
-        Background="#111"
+        Background="#1c1b23"
         SizeToContent="WidthAndHeight"
         MinWidth="400"
         MaxWidth="520"
@@ -68,7 +68,7 @@
         </Grid>
 
         <Border Grid.Row="1"
-                Background="#222"
+                Background="#223"
                 Padding="20">
             <Button HorizontalAlignment="Right"
                     Padding="30 10"

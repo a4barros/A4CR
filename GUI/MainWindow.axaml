@@ -9,7 +9,7 @@
         Height="400"
         CanMaximize="True"
         Title="A4CR"
-        Background="#111"
+        Background="#1c1b23"
         DragDrop.AllowDrop="True"
         DragDrop.DragOver="DragOver"
         DragDrop.Drop="Drop">
@@ -44,11 +44,14 @@
             <ListBox x:Name="FilesList"
                      Grid.Row="1"
                      HorizontalAlignment="Stretch"
-                     VerticalAlignment="Stretch"/>
+                     VerticalAlignment="Stretch"
+                     CornerRadius="10"
+                     Background="#252535"
+                     Opacity="0.9"/>
         </Grid>
 
         <Border x:Name="BottomBar" Grid.Row="1"
-        Background="#222"
+        Background="#223"
         Padding="20">
             <Grid>
                 <Grid.ColumnDefinitions>

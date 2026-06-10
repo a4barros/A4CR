@@ -10,7 +10,7 @@
         MinWidth="360"
         MaxWidth="600"
         x:Class="GUI.ErrorDialog"
-        Background="#111"
+        Background="#1c1b23"
         Title="Error"
         WindowStartupLocation="CenterOwner">
     <Grid RowDefinitions="Auto,Auto">
@@ -22,7 +22,7 @@
                    MaxWidth="520"/>
 
         <Border Grid.Row="1"
-                Background="#222"
+                Background="#223"
                 Padding="20">
             <Button CornerRadius="30"
                     HorizontalAlignment="Right"
