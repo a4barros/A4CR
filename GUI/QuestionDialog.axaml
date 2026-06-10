@@ -4,40 +4,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="GUI.QuestionDialog"
-        Width="800"
-        Height="300"
+        Background="#111"
+        CanMaximize="False"
+        CanResize="False"
+        SizeToContent="WidthAndHeight"
+        MinWidth="360"
+        MaxWidth="600"
         WindowStartupLocation="CenterOwner"
         Title="QuestionDialog">
-   <Grid Margin="50"
-    RowDefinitions="Auto, Auto"
-    ColumnDefinitions="*">
-    <Label
-        Grid.Row="0"
-        x:Name="QuestionLabel"
-        HorizontalAlignment="Center"
-        Margin="30">
-        Question
-    </Label>
-    <StackPanel 
-        Grid.Row="1"
-        Orientation="Horizontal"
-        HorizontalAlignment="Center" >
-        <Button
-            x:Name="ButtonYes"
-            CornerRadius="30"
-            Margin="20"
-            Click="Button_Yes"
-            Padding="30 10">
-            Yes
-        </Button>
-        <Button 
-            x:Name="ButtonNo"
-            CornerRadius="30"
-            Margin="20"
-            Click="Button_No"
-            Padding="30 10">
-            No
-        </Button>
-    </StackPanel>
+    <Grid RowDefinitions="Auto,Auto">
+        <TextBlock x:Name="QuestionLabel"
+                   Text="Question"
+                   TextWrapping="Wrap"
+                   TextAlignment="Center"
+                   Margin="30,30,30,20"
+                   MaxWidth="520"/>
+
+        <Border Grid.Row="1"
+                Background="#222"
+                Padding="20">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button x:Name="ButtonYes"
+                        CornerRadius="30"
+                        Margin="0,0,10,0"
+                        Click="Button_Yes"
+                        Padding="30 10">
+                    Yes
+                </Button>
+                <Button x:Name="ButtonNo"
+                        CornerRadius="30"
+                        Click="Button_No"
+                        Padding="30 10">
+                    No
+                </Button>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>

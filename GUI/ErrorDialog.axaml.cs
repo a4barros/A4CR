@@ -9,7 +9,7 @@ public partial class ErrorDialog : Window
     public ErrorDialog(string message)
     {
         InitializeComponent();
-        MessageLabel.Content = message;
+        MessageLabel.Text = message;
     }
 
     private void Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

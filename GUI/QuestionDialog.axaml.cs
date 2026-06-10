@@ -9,7 +9,7 @@ public partial class QuestionDialog : Window
     public QuestionDialog(string question, string yesText = "Yes")
     {
         InitializeComponent();
-        QuestionLabel.Content = question;
+        QuestionLabel.Text = question;
         ButtonYes.Content = yesText;
     }
 

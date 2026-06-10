@@ -11,7 +11,7 @@ public partial class PasswordDialog : Window
         InitializeComponent();
         if (IsConfirmDialog)
         {
-            PasswordLabel.Content = "Please enter the password again to confirm.\n\n" +
+            PasswordLabel.Text = "Please enter the password again to confirm.\n\n" +
                 "WARNING: If you lose the password, there will be no way to recover this \ndocument.";
         }
     }
