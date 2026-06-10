@@ -56,14 +56,14 @@ namespace GUI
             {
                 var passwordDialogConfirmation = new PasswordDialog(IsConfirmDialog: true);
                 passwordConfirmation = await passwordDialogConfirmation.ShowDialog<string>(this);
+                if (passwordConfirmation is null)
+                {
+                    return;
+                }
                 if (password != passwordConfirmation)
                 {
                     var error = new ErrorDialog("The two passwords do not match");
                     await error.ShowDialog(this);
-                    return;
-                }
-                if (passwordConfirmation is null)
-                {
                     return;
                 }
             }
