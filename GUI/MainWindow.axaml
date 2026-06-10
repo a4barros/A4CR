@@ -7,7 +7,7 @@
         WindowStartupLocation="CenterScreen"
         Width="700"
         Height="400"
-        CanMaximize="False"
+        CanMaximize="True"
         Title="A4CR"
         Background="#111"
         DragDrop.AllowDrop="True"
