@@ -12,9 +12,23 @@ namespace GUI
 {
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private readonly IReadOnlyList<string> _startupFilePaths;
+
+        public MainWindow(IReadOnlyList<string>? startupFilePaths = null)
         {
+            _startupFilePaths = startupFilePaths ?? Array.Empty<string>();
             InitializeComponent();
+        }
+
+        protected override async void OnOpened(EventArgs e)
+        {
+            base.OnOpened(e);
+
+            if (_startupFilePaths.Count > 0)
+            {
+                await HandleFiles(_startupFilePaths);
+                await ProcessSelectedFilesAsync();
+            }
         }
 
         private async void SelectFileButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -42,6 +56,16 @@ namespace GUI
         }
         private async void EncryptButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
+            await ProcessSelectedFilesAsync();
+        }
+
+        private async Task ProcessSelectedFilesAsync()
+        {
+            if (W.selectedFilePathList.Count < 1)
+            {
+                return;
+            }
+
             string password, passwordConfirmation;
 
             var passwordDialog = new PasswordDialog();
@@ -116,7 +140,6 @@ namespace GUI
             {
                 ResetControls();
             }
-
         }
 
         private async void OptionsButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

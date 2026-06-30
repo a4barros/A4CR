@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -15,7 +17,8 @@ namespace GUI
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new MainWindow();
+                var startupFiles = StartupArgs.GetFilePaths(Environment.GetCommandLineArgs().Skip(1));
+                desktop.MainWindow = new MainWindow(startupFiles);
             }
 
             base.OnFrameworkInitializationCompleted();
