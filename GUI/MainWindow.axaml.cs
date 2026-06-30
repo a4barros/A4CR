@@ -34,8 +34,14 @@ namespace GUI
         private async void SelectFileButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             var topLevel = GetTopLevel(this);
+            var storageProvider = topLevel?.StorageProvider;
 
-            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            if (storageProvider is null)
+            {
+                return;
+            }
+
+            var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
                 Title = "Open File",
                 AllowMultiple = true,
